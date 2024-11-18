@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>3DSRBench</title>
+        <script src="template.v2.js"></script>
+        <link rel="icon" href="assets/jhu.png" type="image/png" sizes="128x128">
+        <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+        <!-- <script src="https://d3js.org/d3-collection.v1.min.js"></script> -->
+        <script src="https://rawgit.com/nstrayer/slid3r/master/dist/slid3r.js"></script>
+        <script src="cross_fade.js"></script>
+        <link rel="stylesheet" href="style.css">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+            onload="renderMathInElement(document.body);">
+        </script>
+        <script src="assets/js/mesh_viewer.js"></script>
+        <script src="assets/js/splide.min.js"></script>
+        <script src="assets/js/transition.js"></script>
+        <link rel="stylesheet" href="assets/styles/style.css">
+        <link rel="stylesheet" href="assets/styles/splide.min.css">
+        <!-- <link rel="stylesheet" href="assets/styles/bulma.min.css"> -->
+        <script type="module" src="https://unpkg.com/@google/model-viewer@2.0.1/dist/model-viewer.min.js"></script>
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+        <style>
+            .slider-container {
+                margin: auto; /* Centers the container */
+                width: 80%; /* Adjust this to set the container's width */
+            }
+
+            input[type=range].styled-slider {
+                width: 100%; /* Makes the slider take the full width of its container */
+                /* Add any other styling for the slider here */
+            }
+
+            .button:hover span {
+                color: rgb(255, 204, 0);
+            }
+            .external-link.button.is-normal.is-rounded:hover {
+                color: rgb(255, 204, 0);
+            }
+        </style>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SSVMPNPYNF"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SSVMPNPYNF');
+        </script>
+    </head>
+    <body>
+        <div class="header-container">
+            <div class="header-content">
+              <h1>3DSRBench: A Comprehensive 3D Spatial Reasoning Benchmark</h1>
+              <h3>Technical Report</h3>
+              <p>
+                <a href="https://wufeim.github.io" target="_blank" style="text-decoration: none;">Wufei Ma<sup>1</sup></a> &emsp;
+                <a href="https://www.linkedin.com/in/haoyuchen050400/en" target="_blank" style="text-decoration: none;">Haoyu Chen<sup>2</sup></a> &emsp;
+                <a href="https://openreview.net/profile?id=~Guofeng_Zhang4" target="_blank" style="text-decoration: none;">Guofeng Zhang<sup>1</sup></a> &emsp;
+                <br>
+                <a href="https://celsodemelo.net/" target="_blank" style="text-decoration: none;">Celso Miguel de Melo<sup>3</sup></a> &emsp;
+                <a href="https://beckschen.github.io" target="_blank" style="text-decoration: none;">Jieneng Chen<sup>1</sup></a> &emsp;
+                <a href="https://www.cs.jhu.edu/~ayuille/" target="_blank" style="text-decoration: none;">Alan Yuille<sup>1</sup></a>
+                <br>
+                <br>
+                <a href="https://www.cs.jhu.edu" target="_blank" style="text-decoration: none;"><sup>1</sup>Johns Hopkins University</a> &emsp;
+                <a href="https://www.cmu.edu" target="_blank" style="text-decoration: none;"><sup>2</sup>Carnegie Mellon University</a>
+                <br>
+                <a href="https://arl.devcom.army.mil" target="_blank" style="text-decoration: none;"><sup>3</sup>DEVCOM Army Research Laboratory</a>
+              </p>
+              <div class="button-container">
+                <a href="#" class="button" target="_blank">arXiv</a>
+                <a href="#" class="button" target="_blank">Data (coming soon)</a>
+                <!-- <a href="https://github.com/wufeim/feint6k" class="button" target="_blank">Data</a> -->
+              </div>
+            </div>
+        </div>
+    <d-article>
+        <d-contents>
+            <nav>
+                <h4>Contents</h4>
+                <div><a href="#data">RCAD and Feint6K</a></div>
+                <div><a href="#key-findings">Key Findings</a></div>
+                <div><a href="#llm-teacher">LLM-Teacher</a></div>
+                <div><a href="#misc">Miscellaneous</a></div>
+            </nav>
+        </d-contents>
+
+        <p style="text-align: justify;">
+            We propose a novel evaluation task for video-text understanding, namely <em>retrieval from counterfactually augmented data</em> (RCAD), and a new <strong>Feint6K</strong> dataset, to better assess the capabilities of current video-text models and understand their limitations. To succeed on our new evaluation task, models must derive a comprehensive understanding of the video from cross-frame reasoning. Analyses show that previous video-text foundation models can be easily fooled by counterfactually augmented data and are far behind human-level performance. From our experiments on RCAD, we identify a key limitation of current contrastive approaches on video-text data and introduce <strong>LLM-teacher</strong>, a more effective approach to learn action semantics by leveraging knowledge obtained from a pretrained large language model.
+        </p>
+        <p>
+            <d-figure>
+                <figure>
+                    <img src="assets/images/teaser.png" alt="Our RCAD" style="max-height: 360px; object-fit: contain;">
+                    <figcaption>
+                        <b>Figure 1.</b> Left: Failures of InternVideo <d-cite key="wang2022internvideo"></d-cite> on Feint6K. Right: Quantitative results on Feint6K.
+                    </figcaption>
+                </figure>
+            </d-figure>
+        </p>
+
+        <section id="data">
+            <h2 id="data">RCAD and Feint6K</h2>
+            <p style="text-align: justify;">
+                Retrieval from counterfactually augmented data (RCAD) is a variant of the standard video-to-text retrieval. Given a video sequence and a list of candidate captions, the model needs to retrieve the caption that best matches the semantics in the video.
+            </p>
+            <p>
+                <d-figure>
+                    <figure>
+                        <img src="assets/images/ours_ret.png" alt="Our RCAD" style="max-height: 360px; object-fit: contain;">
+                        <figcaption>
+                            <b>Figure 2.</b> Overview of our proposed <em>retrieval from counterfactually augmented data</em> (RCAD).
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </p>
+            <p style="text-align: justify;">
+                Our task features three key designs:
+                <strong>(1) hard negative captions:</strong> unlike standard re-trieval tasks where negative captions come from other video-text pairs in the same dataset, negative captions in RCAD are modified from the positive captions, with the same text structure and object entities but different actions; <strong>(2) zero-shot evaluation:</strong> captions are manually modified from captions in existing datasets, offering the zero-shot evaluation of video-text foundation models; <strong>(3) challenging questions:</strong> cross-frame reasoning is necessary to obtain the correct answer since all candidate actions are plausible given the video's context.
+            </p>
+            <h3 id="data-collection">Data Collection of Feint6K</h3>
+            <p style="text-align: justify;">
+                We adopt a human-in-the-loop system <d-cite key="Kaushik2020Learning"></d-cite> to counterfactually manipulate the positive captions in existing video-text datasets. The generated counterfactually augmented data, when paired with the original videos, form negative pairs to be used in our proposed task. We recruit 40 annotators to manually manipulate the actions in existing captions.
+            </p>
+            <p>
+                <d-figure>
+                    <figure>
+                        <img src="assets/images/human_in_the_loop.png" alt="Our human-in-the-loop system for data collection">
+                        <figcaption>
+                            <b>Figure 3.</b> Our human-in-the-loop system for data collection
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </p>
+            <p>
+                <d-figure>
+                    <figure>
+                        <img src="assets/images/eg_task.png" alt="Sample questions from Feint6K" style="max-height: 360px; object-fit: contain;">
+                        <figcaption>
+                            <b>Figure 4.</b> Sample questions from our Feint6K dataset.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </p>
+            <h3>Human Performance</h3>
+            <p style="text-align: justify;">
+                We employ the same group of annotators to establish a human-level baseline on our Feint6K dataset. Analyzing the human performance serves two goals: (i) verifying the legitimacy of our Feint6K dataset -- if each question is answerable and has one unique answer, and (ii) comparing the state-of-the-art video-text models with human-level performance.
+            </p>
+        </section>
+
+        <section id="key-findings">
+            <h2 id="key-findings">Key Findings</h2>
+            <p style="text-align: justify;">
+                <b>Previous SOTA video-text models demonstrate limited understanding of the action semantics in videos.</b> Results in Table 1 show that previous video-text models achieve less than 60% R@1 accuray on RCAD, given a 16.7% R@1 accuray when taking random guesses. They also fall far behind human-level performance.
+            </p>
+            <div id="tab:model_ensemble" style="display: flex; flex-direction: column; align-items: center;">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th colspan="1" class="tb-hdr">Model</th>
+                            <th colspan="1" class="tb-hdr">MSR-VTT</th>
+                            <th colspan="3" class="tb-hdr">Feint6K (MSR-VTT)</th>
+                            <th colspan="1" class="tb-hdr">VATEX</th>
+                            <th colspan="3" class="tb-hdr">Feint6K (VATEX)</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th><b>R@1</b></th>
+                            <th>R@1</th>
+                            <th>R@3</th>
+                            <th>MeanR</th>
+                            <th><b>R@1</b></th>
+                            <th>R@1</th>
+                            <th>R@3</th>
+                            <th>MeanR</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Human</td>
+                            <td></td>
+                            <td>95.2</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>96.8</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Random</td>
+                            <td><1e-3</td>
+                            <td>16.7</td>
+                            <td></td>
+                            <td></td>
+                            <td><1e-3</td>
+                            <td>16.7</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><b><i>Zero-shot</i></b></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>CLIP <d-cite key="radford2021learning"></d-cite></td>
+                            <td>26.3</td>
+                            <td>37.3</td>
+                            <td>55.3</td>
+                            <td>2.6</td>
+                            <td>38.8</td>
+                            <td>34.8</td>
+                            <td>54.3</td>
+                            <td>2.7</td>
+                        </tr>
+                        <tr>
+                            <td>VideoCLIP <d-cite key="xu2021videoclip"></d-cite></td>
+                            <td>14.5</td>
+                            <td>35.1</td>
+                            <td>71.3</td>
+                            <td>2.6</td>
+                            <td>13.7</td>
+                            <td>33.0</td>
+                            <td>70.7</td>
+                            <td>2.7</td>
+                        </tr>
+                        <tr>
+                            <td>InternVideo <d-cite key="wang2022internvideo"></d-cite></td>
+                            <td>37.5</td>
+                            <td>45.8</td>
+                            <td>63.6</td>
+                            <td>2.3</td>
+                            <td>76.9</td>
+                            <td>44.1</td>
+                            <td>63.9</td>
+                            <td>2.3</td>
+                        </tr>
+                        <tr>
+                            <td>LanguageBind <d-cite key="zhu2024languagebind"></d-cite></td>
+                            <td>42.8</td>
+                            <td>41.7</td>
+                            <td>76.5</td>
+                            <td>2.4</td>
+                            <td></td>
+                            <td>43.2</td>
+                            <td>77.2</td>
+                            <td>2.3</td>
+                        </tr>
+                        <tr>
+                            <td><b><i>Finetuned</i></b></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>CLIP4Clip <d-cite key="luo2022clip4clip"></d-cite></td>
+                            <td>43.1</td>
+                            <td>50.8</td>
+                            <td>72.4</td>
+                            <td>2.0</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>VindLU <d-cite key="cheng2022vindlu"></d-cite></td>
+                            <td>46.6</td>
+                            <td>53.4</td>
+                            <td>70.9</td>
+                            <td>2.0</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>SimVTP <d-cite key="ma2022simvtp"></d-cite></td>
+                            <td>50.2</td>
+                            <td>35.7</td>
+                            <td>70.8</td>
+                            <td>2.6</td>
+                            <td>76.6</td>
+                            <td>33.6</td>
+                            <td>68.4</td>
+                            <td>2.6</td>
+                        </tr>
+                        <tr>
+                            <td>InternVideo <d-cite key="wang2022internvideo"></d-cite></td>
+                            <td>49.1</td>
+                            <td class="highlight-green">58.6</td>
+                            <td>80.2</td>
+                            <td>1.8</td>
+                            <td>87.9</td>
+                            <td class="highlight-green">58.2</td>
+                            <td>76.9</td>
+                            <td>1.9</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <figcaption style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+                    Table 1. Quantitative results of RCAD on Feint6K.
+                </figcaption>
+            </div>
+            <p style="text-align: justify;">
+                <b>Current video-text models learn a more effective embedding for objects than for actions.</b> With the counterfactually augmented data collected, we compute the <em>change in cosine similarity</em> between the textual and visual embeddings when the objects or actions in captions are swapped. In general the changes in cosine similarity should be negative and the models are more sensitive when the absolute values of the changes are larger. We observe that when actions are swapped, the changes in cosine similarity are sometimes positive and in general, less sensitive than when objects are manipulated.
+            </p>
+            <p>
+                <d-figure>
+                    <figure>
+                        <img src="assets/images/sensitive_ft1.png" alt="Sensitivity to changes of objects or actions" style="max-height: 280px; object-fit: contain;">
+                        <figcaption>
+                            <b>Figure 5.</b> Changes in cosine similarities between textual and visual embeddings when objects or actions in captions are swapped.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </p>
+            <p style="text-align: justify;">
+                <b>Shortcut learning in multi-modal contrastive pretraining.</b> We also study the changes in cosine similarities between textual embeddings, using various textual encoders. We find that textual encoders trained with multi-modal contrastive learning are more sensitive to the changes in objects than to the changes in actions. This is not observed for textual encoders trained on texts only (such as LLaMA). We conjecture that objects act as shortcuts in multi-modal contrastive pretraining and hinder the model from learning an effective action representation.
+            </p>
+            <p>
+                <d-figure>
+                    <figure>
+                        <img src="assets/images/compare_textenc.png" alt="Sensitivity to changes of objects or actions">
+                        <figcaption>
+                            <b>Figure 6.</b> Changes in cosine similarities between textual embeddings before and after objects or actions are swapped.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </p>
+        </section>
+
+        <section id="llm-teacher">
+            <h2 id="llm-teacher">LLM-Teacher</h2>
+            <p style="text-align: justify;">
+                Given the observations above, we introduce LLM-teacher, an LLM-powered approach to better learn action representations with contrastive objectives. The idea is to remove shortcuts in paired video-text data for the model to learn action semantics more effectively. Specifically, LLM serves as the "teacher" and provide synthesized captions with pseudo-labels as extra knowledge for the model to learn from.
+            </p>
+            <p style="text-align: justify;">
+                We first run an abstract meaning representation (AMR) parser and obtain a list of action and object tokens. Then we adopt (i) mask filling, or (ii) an LLM-powered chatbot to generate hard negative captions.
+            </p>
+            <p style="text-align: justify;">
+                During training, LLM-teacher can either learn to retrieve the positive caption given the hard negative captions (<em>i.e.,</em> LLM-teacher-lbl), or distill the cosiner similarities from a pretrained LLM model (<em>i.e.,</em> LLM-teacher-lgt).
+            </p>
+            <p style="text-align: justify;">
+                <b>Results.</b> Quantiative results show that LLM-teacher effectively improves the performance of RCAD on Feint6K. Moreover, results on changes in cosine similarity demontrate that LLM-teacher learns a more effective representation for action semantics in videos as compared to baseline models.
+            </p>
+            <div id="tab:model_ensemble" style="display: flex; flex-direction: column; align-items: center;">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th colspan="1" class="tb-hdr">Model</th>
+                            <th colspan="1" class="tb-hdr">MSR-VTT</th>
+                            <th colspan="3" class="tb-hdr">Feint6K (MSR-VTT)</th>
+                            <th colspan="1" class="tb-hdr">VATEX</th>
+                            <th colspan="3" class="tb-hdr">Feint6K (VATEX)</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th><b>R@1</b></th>
+                            <th>R@1</th>
+                            <th>R@3</th>
+                            <th>MeanR</th>
+                            <th><b>R@1</b></th>
+                            <th>R@1</th>
+                            <th>R@3</th>
+                            <th>MeanR</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><b><i>Finetuned</i></b></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>InternVideo <d-cite key="wang2022internvideo"></d-cite></td>
+                            <td>49.1</td>
+                            <td>58.6</td>
+                            <td>80.2</td>
+                            <td>1.8</td>
+                            <td>87.9</td>
+                            <td>58.2</td>
+                            <td>76.9</td>
+                            <td>1.9</td>
+                        </tr>
+                        <tr>
+                            <td><em>w /</em> LLM-teacher-lbl</td>
+                            <td>48.2</td>
+                            <td>64.2</td>
+                            <td>82.5</td>
+                            <td>1.7</td>
+                            <td>85.2</td>
+                            <td>63.8</td>
+                            <td>80.5</td>
+                            <td>1.7</td>
+                        </tr>
+                        <tr>
+                            <td><em>w /</em> LLM-teacher-lgt</td>
+                            <td>48.9</td>
+                            <td class="highlight-green">65.8</td>
+                            <td>83.8</td>
+                            <td>1.7</td>
+                            <td>87.3</td>
+                            <td class="highlight-green">65.6</td>
+                            <td>81.7</td>
+                            <td>1.7</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <figcaption style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+                    Table 2. Quantitative results of LLM-teacher.
+                </figcaption>
+            <p>
+                <d-figure>
+                    <figure>
+                        <img src="assets/images/sensitive_ft2.png" alt="Sensitivity to changes of objects or actions" style="max-height: 280px; object-fit: contain;">
+                        <figcaption>
+                            <b>Figure 7.</b> LLM-teacher learns a more effective representation for action semantics as compared to baseline models.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </p>
+        </section>
+
+        <section id="misc">
+            <h2 id="misc">Miscellaneous</h2>
+            <p style="text-align: justify;">
+                All data collection and experiments in this work were conducted at JHU.
+            </p>
+            <p style="text-align: justify;">
+                <b>License and agreement.</b> By accessing and using our Feint6K dataset, you agree to follow the terms of access specified in our <a href="https://github.com/facebookresearch/feint6k?tab=License-1-ov-file">license file</a>, our <a href="https://opensource.fb.com/legal/terms/">terms of use</a>, and our <a href="https://opensource.facebook.com/legal/privacy">privacy policy</a>.
+            </p>
+            <p style="text-align: justify;">
+                <b>Ethics.</b> We follow the ethics guidelines of ECCV and obtained Institutional Review Board (IRB) approvals prior to the start of our work. We described potential risks to the annotators, such as being exposed to inappropriate videos from public video datasets <d-cite key="xu2016msr,wang2019vatex"></d-cite>, and explained the purpose of the study and how the collected data will be used. All annotators agreed to join this project voluntarily and were paid by a fair amount as required at our institution.
+            </p>
+        </section>
+
+        </d-article>
+        <d-appendix>
+            <h3>BibTeX</h3>
+            <p class="bibtex">
+                @inproceedings{ma2024rethinking,<br>
+                &nbsp;&nbsp;title={Rethinking Video-Text Understanding: Retrieval from Counterfactually Augmented Data},<br>
+                &nbsp;&nbsp;author={Ma, Wufei and Li, Kai and Jiang, Zhongshi and Meshry, Moustafa and Liu, Qihao and Wang, Huiyu and H{\"a}ne, Christian and Yuille, Alan},<br>
+                &nbsp;&nbsp;booktitle={European Conference on Computer Vision},<br>
+                &nbsp;&nbsp;year={2024},<br>
+                &nbsp;&nbsp;organization={Springer}<br>
+                }
+            </p>
+
+            <h3>Copyright</h3>
+            <p>Copyright © 2024 Meta Platforms, Inc.</p>
+
+            <h3>Notes</h3>
+            <p>This website template is adapted from <a href="https://image-sculpting.github.io">Image Sculpting</a>.</p>
+
+            <d-footnote-list></d-footnote-list>
+            <d-citation-list></d-citation-list>
+        </d-appendix>
+
+          <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+        <d-bibliography src="bibliography.bib"></d-bibliography>
+
+        <!-- <script type="text/bibliography">
+
+        </script> -->
+        <script src="contents_bar.js"></script>
+
+        <script>
+
+
+            window.dataLayer = window.dataLayer || [];
+
+            function initSlider(sliderId) {
+                return new Splide(sliderId, {
+                    type: 'fade',
+                    rewind: true,
+                    perPage: 1,
+                    perMove: 1,
+                    focus: 'center',
+                    width: '100%',
+                    arrows: 'slider',
+                    drag: false,
+                    autoplay: true,
+                    speed: 1000,
+                    lazyLoad: 'nearby',
+                }).mount();
+            }
+
+
+            // Initialize sliders
+            var poseSlider = initSlider('#pose-slider');
+            var carvingSlider = initSlider('#carving-slider');
+            var compositionSlider = initSlider('#composition-slider');
+            var translationSlider = initSlider('#translation-slider');
+            var rotationSlider = initSlider('#rotation-slider');
+            var additionSlider = initSlider('#addition-slider');
+            var imageAngles = {
+                cat: ['0000', '0001', '0002', '0003', '0004', '0005', '0007', '0008', '0009'],
+                chair: ['0000', '0001', '0002', '0003', '0004', '0005', '0007', '0009'],
+                astronaut0: ['0000', '0001', '0002', '0003', '0004', '0006', '0007', '0008', '0009'],
+                joker: ['0000', '0003', '0004', '0005', '0008', '0009'],
+                astronaut1: ['0001', '0002', '0003', '0004', '0008', '0009'],
+                astronaut2: ['0000', '0001', '0003', '0006', '0008', '0009'],
+                lalaland: ['0000', '0001', '0003', '0008', '0009'],
+            };
+
+            // Function to display and refresh the Carving slider
+            function showCarvingSlider() {
+                var carvingContainer = document.getElementById('Carving');
+                carvingContainer.style.display = 'block';
+                carvingSlider.refresh();
+            }
+            function showCompositionSlider() {
+                var carvingContainer = document.getElementById('Composition');
+                carvingContainer.style.display = 'block';
+                compositionSlider.refresh();
+            }
+
+            function showTranslationSlider() {
+                var carvingContainer = document.getElementById('Translation');
+                carvingContainer.style.display = 'block';
+                translationSlider.refresh();
+            }
+
+            function showAdditionSlider() {
+                var carvingContainer = document.getElementById('Addition');
+                carvingContainer.style.display = 'block';
+                additionSlider.refresh();
+            }
+
+
+
+            function showRotationSlider() {
+                var carvingContainer = document.getElementById('Rotation');
+                carvingContainer.style.display = 'block';
+                rotationSlider.refresh();
+            }
+
+            function showPoseSlider() {
+                var carvingContainer = document.getElementById('Pose');
+                carvingContainer.style.display = 'block';
+                poseSlider.refresh();
+            }
+
+
+            function showCategory(categoryName) {
+                if (categoryName === 'Carving') {
+                    showCarvingSlider();
+                }
+                else if (categoryName === 'Composition') {
+                    showCompositionSlider();
+                }
+                else if (categoryName === 'Translation') {
+                    showTranslationSlider();
+                }
+                else if (categoryName === 'Addition') {
+                    showAdditionSlider();
+                }
+                else if (categoryName === 'Rotation') {
+                    showRotationSlider();
+                }
+                else if (categoryName === 'Pose') {
+                    showPoseSlider();
+                }
+                var categories = document.getElementsByClassName("category-content");
+                for (var i = 0; i < categories.length; i++) {
+                    categories[i].style.display = "none";
+                }
+                document.getElementById(categoryName).style.display = "block";
+                var buttons = document.querySelectorAll('.button-container button');
+                buttons.forEach(function(button) {
+                    button.classList.remove('active');
+                });
+
+                // Add 'active' class to the clicked button
+                event.currentTarget.classList.add('active');
+            }
+            function rotate(index, name) {
+                var imagePath = `assets/images/pose_rotation/${name}/pose0/${imageAngles[name][index]}.jpg`;
+                var rotateElements = document.getElementsByClassName('rotate-' + name);
+
+                // Update all instances of rotateElements
+                for (var i = 0; i < rotateElements.length; i++) {
+                    rotateElements[i].src = imagePath;
+                }
+
+                var updatedOrientation = 90 + 36 * parseInt(imageAngles[name][index]);
+                var modelOrientation = updatedOrientation + "deg 270deg 180deg";
+                var rotationAfterElements = document.getElementsByClassName(name + '-rotation-after');
+
+                // Update all instances of rotationAfterElements
+                for (var j = 0; j < rotationAfterElements.length; j++) {
+                    rotationAfterElements[j].setAttribute('orientation', modelOrientation);
+                }
+            }
+
+
+
+            function updateRotation(direction, model) {
+                var currentRotationElement = document.getElementById('rotation' + model);
+                var currentRotationIndex = parseInt(currentRotationElement.value);
+                currentRotationIndex += direction;
+
+                if (currentRotationIndex < 0) currentRotationIndex = imageAngles[model].length - 1;
+                if (currentRotationIndex >= imageAngles[model].length) currentRotationIndex = 0;
+                currentRotationElement.value = currentRotationIndex;
+
+                rotate(currentRotationIndex, model);
+
+                var rotationDisplays = document.getElementsByClassName("rotationDisplay" + model);
+
+
+                for (var i = 0; i < rotationDisplays.length; i++) {
+                    rotationDisplays[i].textContent = "Rotation: " + 36 * imageAngles[model][currentRotationIndex] + "°";
+                }
+            }
+
+
+            function updateAddition(direction, model) {
+                var currentAdditionElement = document.getElementById('addition' + model);
+                var currentAdditionIndex = parseInt(currentAdditionElement.value);
+                currentAdditionIndex += direction;
+                currentAdditionIndex = Math.max(0, Math.min(currentAdditionIndex, 4));
+                currentAdditionElement.value = currentAdditionIndex;
+                // Toggle visibility of the plus and minus buttons using their IDs
+                var plusButton = document.getElementById('plusButton' + model);
+                var minusButton = document.getElementById('minusButton' + model);
+
+                plusButton.style.visibility = currentAdditionIndex >= 4 ? 'hidden' : 'visible';
+                minusButton.style.visibility = currentAdditionIndex <= 0 ? 'hidden' : 'visible';
+
+                addObject(currentAdditionIndex, model);
+                var additionDisplay = document.getElementsByClassName("additionDisplay" + model);
+                for (var j=0; j < additionDisplay.length; j++) {
+                    additionDisplay[j].textContent = "Number of Objects: " + currentAdditionIndex;
+                }
+
+
+            }
+
+            function addObject(num, name) {
+                var meshPath = `assets/meshes/addition/${name}_${num}.glb`;
+                var imagePath = `assets/images/addition/${name}/${num}.jpg`;
+                var allMesh = document.getElementsByClassName(name + "-after-add");
+                var allImg = document.getElementsByClassName("add-" + name);
+                for (var i = 0; i < allMesh.length; i++) {
+                    allMesh[i].src = meshPath;
+                    allImg[i].src = imagePath;
+                }
+
+                additionSlider.refresh();
+            }
+
+
+        </script>
+
+
+    </body>
+</html>
