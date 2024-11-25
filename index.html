@@ -75,7 +75,8 @@
               </p>
               <div class="button-container">
                 <a href="#" class="button" target="_blank">arXiv</a>
-                <a href="#" class="button" target="_blank">Data (coming soon)</a>
+                <a href="#explore" class="button">Explore</a>
+                <a href="#" class="button">Data (will be out by <span><img src="assets/images/christmas-tree.png" style="height: 20px;"></span> Christmas)</a>
                 <!-- <a href="https://github.com/wufeim/feint6k" class="button" target="_blank">Data</a> -->
               </div>
             </div>
@@ -84,80 +85,93 @@
         <d-contents>
             <nav>
                 <h4>Contents</h4>
-                <div><a href="#data">RCAD and Feint6K</a></div>
+                <div><a href="#explore">Explore</a></div>
+                <div><a href="#data">3DSRBench</a></div>
                 <div><a href="#key-findings">Key Findings</a></div>
-                <div><a href="#llm-teacher">LLM-Teacher</a></div>
                 <div><a href="#misc">Miscellaneous</a></div>
             </nav>
         </d-contents>
 
         <p style="text-align: justify;">
-            We propose a novel evaluation task for video-text understanding, namely <em>retrieval from counterfactually augmented data</em> (RCAD), and a new <strong>Feint6K</strong> dataset, to better assess the capabilities of current video-text models and understand their limitations. To succeed on our new evaluation task, models must derive a comprehensive understanding of the video from cross-frame reasoning. Analyses show that previous video-text foundation models can be easily fooled by counterfactually augmented data and are far behind human-level performance. From our experiments on RCAD, we identify a key limitation of current contrastive approaches on video-text data and introduce <strong>LLM-teacher</strong>, a more effective approach to learn action semantics by leveraging knowledge obtained from a pretrained large language model.
+            We present 3DSRBench, a new 3D spatial reasoning benchmark that significantly advances the evaluation of 3D spatial reasoning capabilities of LMMs by manually annotating 2,100 VQAs on MS-COCO images <d-cite key="lin2014microsoft"></d-cite> and 672 on multi-view synthetic images rendered from HSSD <d-cite key="khanna2023hssd"></d-cite>. Experimental results on different splits of our 3DSRBench provide valuable findings and insights that will benefit future research on 3D spatially intelligent LMMs.
         </p>
-        <p>
-            <d-figure>
+        <d-figure id="fig1">
+            <figure>
+                <img src="assets/images/teaser.png" alt="Our RCAD" style="object-fit: contain;">
+                <figcaption>
+                    <b>Figure 1.</b> Overview of our 3DSRBench.
+                </figcaption>
+            </figure>
+        </d-figure>
+
+        <section id="explore">
+            <h2 id="explore">Explore</h2>
+            <p styel="text-align: justify;">
+                Demo and full dataset will be released by <span><img src="assets/images/christmas-tree.png" style="height: 20px;"></span> Christmas.
+            </p>
+            <d-figure id="fig2">
                 <figure>
-                    <img src="assets/images/teaser.png" alt="Our RCAD" style="max-height: 360px; object-fit: contain;">
+                    <img src="assets/images/egs_01.jpg" alt="3DSRBench">
+                    <img src="assets/images/egs_02.jpg" alt="3DSRBench">
+                    <img src="assets/images/egs_03.jpg" alt="3DSRBench">
                     <figcaption>
-                        <b>Figure 1.</b> Left: Failures of InternVideo <d-cite key="wang2022internvideo"></d-cite> on Feint6K. Right: Quantitative results on Feint6K.
+                        <b>Figure 2.</b> Qualitative examples from our 3DSRBench.
                     </figcaption>
                 </figure>
             </d-figure>
-        </p>
+        </section>
 
         <section id="data">
-            <h2 id="data">RCAD and Feint6K</h2>
+            <h2 id="data">3DSRBench</h2>
             <p style="text-align: justify;">
-                Retrieval from counterfactually augmented data (RCAD) is a variant of the standard video-to-text retrieval. Given a video sequence and a list of candidate captions, the model needs to retrieve the caption that best matches the semantics in the video.
+                3D spatial reasoning is the ability to analyze and interpret the positions, orientations, and spatial relationships of objects within the 3D space. This allows models to develop a comprehensive understanding of the 3D scene, enabling their applicability to a broader range of areas, such as autonomous navigation, robotics, and AR/VR.
             </p>
-            <p>
-                <d-figure>
-                    <figure>
-                        <img src="assets/images/ours_ret.png" alt="Our RCAD" style="max-height: 360px; object-fit: contain;">
-                        <figcaption>
-                            <b>Figure 2.</b> Overview of our proposed <em>retrieval from counterfactually augmented data</em> (RCAD).
-                        </figcaption>
-                    </figure>
-                </d-figure>
-            </p>
+
             <p style="text-align: justify;">
-                Our task features three key designs:
-                <strong>(1) hard negative captions:</strong> unlike standard re-trieval tasks where negative captions come from other video-text pairs in the same dataset, negative captions in RCAD are modified from the positive captions, with the same text structure and object entities but different actions; <strong>(2) zero-shot evaluation:</strong> captions are manually modified from captions in existing datasets, offering the zero-shot evaluation of video-text foundation models; <strong>(3) challenging questions:</strong> cross-frame reasoning is necessary to obtain the correct answer since all candidate actions are plausible given the video's context.
+                We present the first comprehensive 3D spatial reasoning benchmark, 3DSRBench, that features <b>2,762</b> manually annotated 3D spatial reasoning questions on <b>diverse and open-vocabulary entities</b>, including rigid objects, humans, animals, and implicit concepts, such as logo on a car or arrow on a billboard.
             </p>
-            <h3 id="data-collection">Data Collection of Feint6K</h3>
+
             <p style="text-align: justify;">
-                We adopt a human-in-the-loop system <d-cite key="Kaushik2020Learning"></d-cite> to counterfactually manipulate the positive captions in existing video-text datasets. The generated counterfactually augmented data, when paired with the original videos, form negative pairs to be used in our proposed task. We recruit 40 annotators to manually manipulate the actions in existing captions.
+                <b style="color: #002D72;">Scope of 3DSRBench.</b> With 3DSRBench we hope to enable the following: (1) <u>a robust and comprehensive evaluation of 3D spatial reasoning capabilities</u> of state-of-the-art LMMs; (2) studying the <u>robustness of 3D spatial reasoning capabilities w.r.t. common and uncommon camera 6D viewpoints</u>, which is a crucial ability when deployed to downstream tasks in embodied AI and robotics; and (3) <u>a diagnosis benchmark</u> to study the 3D awareness of visual encoders and reasoning abilities of LLMs, shedding light on downstream tasks that build on 3D spatial reasoning, such as automatic navigation and robotic manipulation.
             </p>
-            <p>
-                <d-figure>
-                    <figure>
-                        <img src="assets/images/human_in_the_loop.png" alt="Our human-in-the-loop system for data collection">
-                        <figcaption>
-                            <b>Figure 3.</b> Our human-in-the-loop system for data collection
-                        </figcaption>
-                    </figure>
-                </d-figure>
-            </p>
-            <p>
-                <d-figure>
-                    <figure>
-                        <img src="assets/images/eg_task.png" alt="Sample questions from Feint6K" style="max-height: 360px; object-fit: contain;">
-                        <figcaption>
-                            <b>Figure 4.</b> Sample questions from our Feint6K dataset.
-                        </figcaption>
-                    </figure>
-                </d-figure>
-            </p>
-            <h3>Human Performance</h3>
+
             <p style="text-align: justify;">
-                We employ the same group of annotators to establish a human-level baseline on our Feint6K dataset. Analyzing the human performance serves two goals: (i) verifying the legitimacy of our Feint6K dataset -- if each question is answerable and has one unique answer, and (ii) comparing the state-of-the-art video-text models with human-level performance.
+                <b style="color: #002D72;">Dataset splits and scopes.</b> Our 3DSRBench consists of three splits, a <u>real</u> with 2,100 VQAs on MS-COCO images and two <u>synthetic</u> splits with VQAs on multi-view images rendered with "common" and "uncommon" camera 6D viewpoints of the same 3D scene. We define "common" camera viewpoints as ones positioned at the eye level with natural viewing angles, which are well populated in common image datasets, and others as "uncommon" viewpoints
             </p>
+
+            <d-figure id="fig3">
+                <figure>
+                    <img src="assets/images/hssd_eg2.png" alt="Our RCAD">
+                    <img src="assets/images/hssd_eg3.png" alt="Our RCAD">
+                    <figcaption>
+                        <b>Figure 3.</b> Qualitative examples from the two synthetic splits of our 3DSRBench with common and uncommon camera viewpoints of the same 3D scene.
+                    </figcaption>
+                </figure>
+            </d-figure>
+
+            <p style="text-align: justify;">
+                <b style="color: #002D72;">Design considerations. (See <a href="#fig4">Figure 4</a>.)</b> As a manually annotated dataset, our 3DSRBench incorporates the following three key designs: (1) we <u>avoid questions with trivial answers</u>; (2) we adopt <u>a balanced data distribution in various aspects</u>, removing priors in the answer distribution, <i>e.g.</i>, pedestrians are often located lower than street lights, or the fact that objects higher in 3D space are also higher in 2D image plane; and (3) <u>robust evaluation strategies</u>, such as CircularEval <d-cite key="liu2025mmbench"></d-cite> and our novel FlipEval.
+            </p>
+
+            <d-figure id="fig4">
+                <figure>
+                    <img src="assets/images/3dsrbench-teaser-b.png" alt="Our RCAD" style="max-height: 360px; object-fit: contain;">
+                    <figcaption>
+                        <b>Figure 4.</b> Illustration of our key designs. Top: balanced data distrubtion with complementary pairs. Bottom: our novel FlipEval for robust evaluation.
+                    </figcaption>
+                </figure>
+            </d-figure>
+
+            <p style="text-align: justify;">
+                <b style="color: #002D72;">Question types. (See <a href="#fig1">Figure 1</a>.)</b> Our 3DSRBench consists of 12 subtypes of questions from 4 main categories, <i>i.e.</i>, height, location, orientation, and multi-object reasoning. Each category of questions focuses on different combinations of 3D properties, such as object 3D location, 3D ground plane, camera extrinsic calibration, and/or object 3D poses.
+            </p>
+
         </section>
 
         <section id="key-findings">
             <h2 id="key-findings">Key Findings</h2>
             <p style="text-align: justify;">
-                <b>Previous SOTA video-text models demonstrate limited understanding of the action semantics in videos.</b> Results in Table 1 show that previous video-text models achieve less than 60% R@1 accuray on RCAD, given a 16.7% R@1 accuray when taking random guesses. They also fall far behind human-level performance.
+                <b style="color: #002D72;">State-of-the-art LMMs demonstrate limited 3D spatial reasoning capabilties.</b>
             </p>
             <div id="tab:model_ensemble" style="display: flex; flex-direction: column; align-items: center;">
                 <div class="table-container">
@@ -165,103 +179,47 @@
                         <thead>
                         <tr>
                             <th colspan="1" class="tb-hdr">Model</th>
-                            <th colspan="1" class="tb-hdr">MSR-VTT</th>
-                            <th colspan="3" class="tb-hdr">Feint6K (MSR-VTT)</th>
-                            <th colspan="1" class="tb-hdr">VATEX</th>
-                            <th colspan="3" class="tb-hdr">Feint6K (VATEX)</th>
+                            <th colspan="5" class="tb-hdr">3DSRBench-real</th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th><b>R@1</b></th>
-                            <th>R@1</th>
-                            <th>R@3</th>
-                            <th>MeanR</th>
-                            <th><b>R@1</b></th>
-                            <th>R@1</th>
-                            <th>R@3</th>
-                            <th>MeanR</th>
+                            <th>Overall</th>
+                            <th>Height</th>
+                            <th>Location</th>
+                            <th>Orientation</th>
+                            <th>Multi-Object</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td>Human</td>
-                            <td></td>
-                            <td>95.2</td>
+                            <td><b><i>Baselines</i></b></td>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td>96.8</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Random</td>
-                            <td><1e-3</td>
-                            <td>16.7</td>
-                            <td></td>
-                            <td></td>
-                            <td><1e-3</td>
-                            <td>16.7</td>
-                            <td></td>
-                            <td></td>
+                            <td>20.9</td>
+                            <td>25.0</td>
+                            <td>25.0</td>
+                            <td>16.8</td>
+                            <td>20.1</td>
                         </tr>
                         <tr>
-                            <td><b><i>Zero-shot</i></b></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>CLIP <d-cite key="radford2021learning"></d-cite></td>
-                            <td>26.3</td>
-                            <td>37.3</td>
-                            <td>55.3</td>
-                            <td>2.6</td>
-                            <td>38.8</td>
-                            <td>34.8</td>
-                            <td>54.3</td>
-                            <td>2.7</td>
-                        </tr>
-                        <tr>
-                            <td>VideoCLIP <d-cite key="xu2021videoclip"></d-cite></td>
-                            <td>14.5</td>
-                            <td>35.1</td>
-                            <td>71.3</td>
-                            <td>2.6</td>
-                            <td>13.7</td>
-                            <td>33.0</td>
-                            <td>70.7</td>
-                            <td>2.7</td>
-                        </tr>
-                        <tr>
-                            <td>InternVideo <d-cite key="wang2022internvideo"></d-cite></td>
-                            <td>37.5</td>
+                            <td>Random++</td>
                             <td>45.8</td>
-                            <td>63.6</td>
-                            <td>2.3</td>
-                            <td>76.9</td>
-                            <td>44.1</td>
-                            <td>63.9</td>
-                            <td>2.3</td>
-                        </tr>
-                        <tr>
-                            <td>LanguageBind <d-cite key="zhu2024languagebind"></d-cite></td>
-                            <td>42.8</td>
+                            <td>50.0</td>
+                            <td>50.0</td>
                             <td>41.7</td>
-                            <td>76.5</td>
-                            <td>2.4</td>
-                            <td></td>
-                            <td>43.2</td>
-                            <td>77.2</td>
-                            <td>2.3</td>
+                            <td>45.0</td>
                         </tr>
                         <tr>
-                            <td><b><i>Finetuned</i></b></td>
+                            <td><b><i>Open-sourced</i></b></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -272,124 +230,110 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td>CLIP4Clip <d-cite key="luo2022clip4clip"></d-cite></td>
-                            <td>43.1</td>
-                            <td>50.8</td>
-                            <td>72.4</td>
-                            <td>2.0</td>
+                            <td>LLaVA-v1.5-7B <d-cite key="liu2023improvedllava"></d-cite></td>
+                            <td>36.8</td>
+                            <td>38.5</td>
+                            <td>46.4</td>
+                            <td>27.7</td>
+                            <td>31.8</td>
+                        </tr>
+                        <tr>
+                            <td>Cambrian-1-8B <d-cite key="tong2024cambrian"></d-cite></td>
+                            <td>44.1</td>
+                            <td>25.6</td>
+                            <td>57.0</td>
+                            <td>36.5</td>
+                            <td><u>43.1</u></td>
+                        </tr>
+                        <tr>
+                            <td>LLaVA-NeXT-8B <d-cite key="liu2024llavanext"></d-cite></td>
+                            <td class="highlight-green">49.6</td>
+                            <td><u>50.6</u></td>
+                            <td><u>62.7</u></td>
+                            <td><u>36.8</u></td>
+                            <td class="highlight-green">43.6</td>
+                        </tr>
+                        <tr>
+                            <td><b><i>Proprietary</i></b></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td>VindLU <d-cite key="cheng2022vindlu"></d-cite></td>
-                            <td>46.6</td>
-                            <td>53.4</td>
-                            <td>70.9</td>
-                            <td>2.0</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>SimVTP <d-cite key="ma2022simvtp"></d-cite></td>
-                            <td>50.2</td>
-                            <td>35.7</td>
-                            <td>70.8</td>
-                            <td>2.6</td>
-                            <td>76.6</td>
+                            <td>Claude-Flash</td>
+                            <td>39.2</td>
+                            <td>39.8</td>
+                            <td>59.9</td>
+                            <td>13.2</td>
                             <td>33.6</td>
-                            <td>68.4</td>
-                            <td>2.6</td>
                         </tr>
                         <tr>
-                            <td>InternVideo <d-cite key="wang2022internvideo"></d-cite></td>
-                            <td>49.1</td>
-                            <td class="highlight-green">58.6</td>
-                            <td>80.2</td>
-                            <td>1.8</td>
-                            <td>87.9</td>
-                            <td class="highlight-green">58.2</td>
-                            <td>76.9</td>
-                            <td>1.9</td>
+                            <td>Claude-Sonnect</td>
+                            <td>46.9</td>
+                            <td>49.6</td>
+                            <td>60.0</td>
+                            <td>32.8</td>
+                            <td>41.2</td>
+                        </tr>
+                        <tr>
+                            <td>Gemini-Pro</td>
+                            <td><u>49.1</u></td>
+                            <td class="highlight-green">50.8</td>
+                            <td class="highlight-green">62.9</td>
+                            <td class="highlight-green">37.5</td>
+                            <td>41.3</td>
+                        </tr>
+                        <tr>
+                            <td>GPT-4o-mini</td>
+                            <td>39.1</td>
+                            <td>42.1</td>
+                            <td>51.8</td>
+                            <td>23.4</td>
+                            <td>34.6</td>
+                        </tr>
+                        <tr>
+                            <td>GPT-4o</td>
+                            <td>45.3</td>
+                            <td>49.4</td>
+                            <td>62.3</td>
+                            <td>23.0</td>
+                            <td>40.1</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
                 <figcaption style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-                    Table 1. Quantitative results of RCAD on Feint6K.
+                    <b>Table 1.</b> 3D spaital reasoning capabilities of various LMMs on our 3DSRBench-real.
                 </figcaption>
             </div>
-            <p style="text-align: justify;">
-                <b>Current video-text models learn a more effective embedding for objects than for actions.</b> With the counterfactually augmented data collected, we compute the <em>change in cosine similarity</em> between the textual and visual embeddings when the objects or actions in captions are swapped. In general the changes in cosine similarity should be negative and the models are more sensitive when the absolute values of the changes are larger. We observe that when actions are swapped, the changes in cosine similarity are sometimes positive and in general, less sensitive than when objects are manipulated.
-            </p>
-            <p>
-                <d-figure>
-                    <figure>
-                        <img src="assets/images/sensitive_ft1.png" alt="Sensitivity to changes of objects or actions" style="max-height: 280px; object-fit: contain;">
-                        <figcaption>
-                            <b>Figure 5.</b> Changes in cosine similarities between textual and visual embeddings when objects or actions in captions are swapped.
-                        </figcaption>
-                    </figure>
-                </d-figure>
-            </p>
-            <p style="text-align: justify;">
-                <b>Shortcut learning in multi-modal contrastive pretraining.</b> We also study the changes in cosine similarities between textual embeddings, using various textual encoders. We find that textual encoders trained with multi-modal contrastive learning are more sensitive to the changes in objects than to the changes in actions. This is not observed for textual encoders trained on texts only (such as LLaMA). We conjecture that objects act as shortcuts in multi-modal contrastive pretraining and hinder the model from learning an effective action representation.
-            </p>
-            <p>
-                <d-figure>
-                    <figure>
-                        <img src="assets/images/compare_textenc.png" alt="Sensitivity to changes of objects or actions">
-                        <figcaption>
-                            <b>Figure 6.</b> Changes in cosine similarities between textual embeddings before and after objects or actions are swapped.
-                        </figcaption>
-                    </figure>
-                </d-figure>
-            </p>
-        </section>
 
-        <section id="llm-teacher">
-            <h2 id="llm-teacher">LLM-Teacher</h2>
             <p style="text-align: justify;">
-                Given the observations above, we introduce LLM-teacher, an LLM-powered approach to better learn action representations with contrastive objectives. The idea is to remove shortcuts in paired video-text data for the model to learn action semantics more effectively. Specifically, LLM serves as the "teacher" and provide synthesized captions with pseudo-labels as extra knowledge for the model to learn from.
+                <b style="color: #002D72;">State-of-the-art LMMs exhibit signifcantly degraded 3D spatial reasoning performance when generalize from "common" to "uncommon" camera 6D viewpoints.</b>
             </p>
-            <p style="text-align: justify;">
-                We first run an abstract meaning representation (AMR) parser and obtain a list of action and object tokens. Then we adopt (i) mask filling, or (ii) an LLM-powered chatbot to generate hard negative captions.
-            </p>
-            <p style="text-align: justify;">
-                During training, LLM-teacher can either learn to retrieve the positive caption given the hard negative captions (<em>i.e.,</em> LLM-teacher-lbl), or distill the cosiner similarities from a pretrained LLM model (<em>i.e.,</em> LLM-teacher-lgt).
-            </p>
-            <p style="text-align: justify;">
-                <b>Results.</b> Quantiative results show that LLM-teacher effectively improves the performance of RCAD on Feint6K. Moreover, results on changes in cosine similarity demontrate that LLM-teacher learns a more effective representation for action semantics in videos as compared to baseline models.
-            </p>
+
             <div id="tab:model_ensemble" style="display: flex; flex-direction: column; align-items: center;">
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
                         <tr>
                             <th colspan="1" class="tb-hdr">Model</th>
-                            <th colspan="1" class="tb-hdr">MSR-VTT</th>
-                            <th colspan="3" class="tb-hdr">Feint6K (MSR-VTT)</th>
-                            <th colspan="1" class="tb-hdr">VATEX</th>
-                            <th colspan="3" class="tb-hdr">Feint6K (VATEX)</th>
+                            <th colspan="3" class="tb-hdr">Camera 6D Viewpoints</th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th><b>R@1</b></th>
-                            <th>R@1</th>
-                            <th>R@3</th>
-                            <th>MeanR</th>
-                            <th><b>R@1</b></th>
-                            <th>R@1</th>
-                            <th>R@3</th>
-                            <th>MeanR</th>
+                            <th>Common</th>
+                            <th>Uncommon</th>
+                            <th>Change</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td><b><i>Finetuned</i></b></td>
+                            <td><b><i>Baselines</i></b></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -400,66 +344,117 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td>InternVideo <d-cite key="wang2022internvideo"></d-cite></td>
-                            <td>49.1</td>
-                            <td>58.6</td>
-                            <td>80.2</td>
-                            <td>1.8</td>
-                            <td>87.9</td>
-                            <td>58.2</td>
-                            <td>76.9</td>
-                            <td>1.9</td>
+                            <td>Random</td>
+                            <td>20.9</td>
+                            <td>20.9</td>
+                            <td><span style="color: #808080">+0.0%</span></td>
                         </tr>
                         <tr>
-                            <td><em>w /</em> LLM-teacher-lbl</td>
-                            <td>48.2</td>
-                            <td>64.2</td>
-                            <td>82.5</td>
-                            <td>1.7</td>
-                            <td>85.2</td>
-                            <td>63.8</td>
-                            <td>80.5</td>
-                            <td>1.7</td>
+                            <td>Random++</td>
+                            <td>45.8</td>
+                            <td>45.8</td>
+                            <td><span style="color: #808080">+0.0%</span></td>
                         </tr>
                         <tr>
-                            <td><em>w /</em> LLM-teacher-lgt</td>
-                            <td>48.9</td>
-                            <td class="highlight-green">65.8</td>
-                            <td>83.8</td>
-                            <td>1.7</td>
-                            <td>87.3</td>
-                            <td class="highlight-green">65.6</td>
-                            <td>81.7</td>
-                            <td>1.7</td>
+                            <td><b><i>Open-sourced</i></b></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>LLaVA-v1.5-7B <d-cite key="liu2023improvedllava"></d-cite></td>
+                            <td>42.0</td>
+                            <td>38.0</td>
+                            <td><span style="color: #f66b4d">-9.5%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Cambrian-1-8B <d-cite key="tong2024cambrian"></d-cite></td>
+                            <td>48.1</td>
+                            <td>39.9</td>
+                            <td><span style="color: #f66b4d">-17.0%</span></td>
+                        </tr>
+                        <tr>
+                            <td>LLaVA-NeXT-8B <d-cite key="liu2024llavanext"></d-cite></td>
+                            <td><u>45.5</u></td>
+                            <td><u>36.8</u></td>
+                            <td><span style="color: #f66b4d">-19.1%</span></td>
+                        </tr>
+                        <tr>
+                            <td><b><i>Proprietary</i></b></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Claude-Flash</td>
+                            <td>44.6</td>
+                            <td>37.7</td>
+                            <td><span style="color: #f66b4d">-15.5%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Claude-Sonnect</td>
+                            <td>47.4</td>
+                            <td>39.4</td>
+                            <td><span style="color: #f66b4d">-16.9%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Gemini-Pro</td>
+                            <td>59.9</td>
+                            <td>49.5</td>
+                            <td><span style="color: #f66b4d">-17.4%</span></td>
+                        </tr>
+                        <tr>
+                            <td>GPT-4o-mini</td>
+                            <td>46.5</td>
+                            <td>40.3</td>
+                            <td><span style="color: #f66b4d">-13.3%</span></td>
+                        </tr>
+                        <tr>
+                            <td>GPT-4o</td>
+                            <td>51.2</td>
+                            <td>44.3</td>
+                            <td><span style="color: #f66b4d">-13.5%</span></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
                 <figcaption style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
-                    Table 2. Quantitative results of LLM-teacher.
+                    <b>Table 2.</b> Degraded 3D spatial reasoning performance of LMMs when generalizing from common to uncommon camera 6D viewpoints.
                 </figcaption>
-            <p>
-                <d-figure>
-                    <figure>
-                        <img src="assets/images/sensitive_ft2.png" alt="Sensitivity to changes of objects or actions" style="max-height: 280px; object-fit: contain;">
-                        <figcaption>
-                            <b>Figure 7.</b> LLM-teacher learns a more effective representation for action semantics as compared to baseline models.
-                        </figcaption>
-                    </figure>
-                </d-figure>
+            </div>
+
+            <p style="text-align: justify;">
+                <b style="color: #002D72;">Failure cases of GPT-4o on our 3DSRBench dataset.</b>
             </p>
+
+            <d-figure id="fig5">
+                <figure>
+                    <img src="assets/images/3drbench_eg.png" alt="3DSRBench">
+                    <figcaption>
+                        <b>Figure 5.</b> Failure cases of GPT-4o on our 3DSRBench dataset.
+                    </figcaption>
+                </figure>
+            </d-figure>
+
         </section>
 
         <section id="misc">
             <h2 id="misc">Miscellaneous</h2>
             <p style="text-align: justify;">
-                All data collection and experiments in this work were conducted at JHU.
+                <b>License.</b> Our 3DSRBench is released under the <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> license. By accessing and using our 3DSRBench, you agree to follow the terms of access specified <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">here</a>.
             </p>
             <p style="text-align: justify;">
-                <b>License and agreement.</b> By accessing and using our Feint6K dataset, you agree to follow the terms of access specified in our <a href="https://github.com/facebookresearch/feint6k?tab=License-1-ov-file">license file</a>, our <a href="https://opensource.fb.com/legal/terms/">terms of use</a>, and our <a href="https://opensource.facebook.com/legal/privacy">privacy policy</a>.
-            </p>
-            <p style="text-align: justify;">
-                <b>Ethics.</b> We follow the ethics guidelines of ECCV and obtained Institutional Review Board (IRB) approvals prior to the start of our work. We described potential risks to the annotators, such as being exposed to inappropriate videos from public video datasets <d-cite key="xu2016msr,wang2019vatex"></d-cite>, and explained the purpose of the study and how the collected data will be used. All annotators agreed to join this project voluntarily and were paid by a fair amount as required at our institution.
+                <b>Ethics.</b> We follow the ethics guidelines at Johns Hopkins University and obtained Institutional Review Board (IRB) approvals prior to the start of our work. We described potential risks to the annotators and explained the purpose of the study and how the collected data would be used. All annotators agreed to join this project voluntarily and were paid by a fair amount as required at our institution.
             </p>
         </section>
 
@@ -467,17 +462,8 @@
         <d-appendix>
             <h3>BibTeX</h3>
             <p class="bibtex">
-                @inproceedings{ma2024rethinking,<br>
-                &nbsp;&nbsp;title={Rethinking Video-Text Understanding: Retrieval from Counterfactually Augmented Data},<br>
-                &nbsp;&nbsp;author={Ma, Wufei and Li, Kai and Jiang, Zhongshi and Meshry, Moustafa and Liu, Qihao and Wang, Huiyu and H{\"a}ne, Christian and Yuille, Alan},<br>
-                &nbsp;&nbsp;booktitle={European Conference on Computer Vision},<br>
-                &nbsp;&nbsp;year={2024},<br>
-                &nbsp;&nbsp;organization={Springer}<br>
-                }
+                TBD
             </p>
-
-            <h3>Copyright</h3>
-            <p>Copyright © 2024 Meta Platforms, Inc.</p>
 
             <h3>Notes</h3>
             <p>This website template is adapted from <a href="https://image-sculpting.github.io">Image Sculpting</a>.</p>
