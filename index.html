@@ -76,8 +76,7 @@
               <div class="button-container">
                 <a href="https://arxiv.org/abs/2412.07825" class="button" target="_blank">arXiv</a>
                 <a href="#explore" class="button">Explore</a>
-                <a href="#" class="button">Data (will be out by <span><img src="assets/images/christmas-tree.png" style="height: 20px;"></span> Christmas)</a>
-                <!-- <a href="https://github.com/wufeim/feint6k" class="button" target="_blank">Data</a> -->
+                <a href="https://huggingface.co/datasets/ccvl/3DSRBench" class="button">Data</a>
               </div>
             </div>
         </div>
@@ -107,9 +106,9 @@
         <section id="explore">
             <h2 id="explore">Explore</h2>
             <p styel="text-align: justify;">
-                Demo and full dataset will be released by <span><img src="assets/images/christmas-tree.png" style="height: 20px;"></span> Christmas.
+                Explore data from <a href="https://huggingface.co/datasets/ccvl/3DSRBench">huggingface.co</a>. <i>Demo coming soon...</i>
             </p>
-            <d-figure id="fig2">
+            <!-- <d-figure id="fig2">
                 <figure>
                     <img src="assets/images/egs_01.jpg" alt="3DSRBench">
                     <img src="assets/images/egs_02.jpg" alt="3DSRBench">
@@ -118,7 +117,7 @@
                         <b>Figure 2.</b> Qualitative examples from our 3DSRBench.
                     </figcaption>
                 </figure>
-            </d-figure>
+            </d-figure> -->
         </section>
 
         <section id="data">
@@ -144,20 +143,20 @@
                     <img src="assets/images/hssd_eg2.png" alt="Our RCAD">
                     <img src="assets/images/hssd_eg3.png" alt="Our RCAD">
                     <figcaption>
-                        <b>Figure 3.</b> Qualitative examples from the two synthetic splits of our 3DSRBench with common and uncommon camera viewpoints of the same 3D scene.
+                        <b>Figure 2.</b> Qualitative examples from the two synthetic splits of our 3DSRBench with common and uncommon camera viewpoints of the same 3D scene.
                     </figcaption>
                 </figure>
             </d-figure>
 
             <p style="text-align: justify;">
-                <b style="color: #002D72;">Design considerations. (See <a href="#fig4">Figure 4</a>.)</b> As a manually annotated dataset, our 3DSRBench incorporates the following three key designs: (1) we <u>avoid questions with trivial answers</u>; (2) we adopt <u>a balanced data distribution in various aspects</u>, removing priors in the answer distribution, <i>e.g.</i>, pedestrians are often located lower than street lights, or the fact that objects higher in 3D space are also higher in 2D image plane; and (3) <u>robust evaluation strategies</u>, such as CircularEval <d-cite key="liu2025mmbench"></d-cite> and our novel FlipEval.
+                <b style="color: #002D72;">Design considerations. (See <a href="#fig4">Figure 3</a>.)</b> As a manually annotated dataset, our 3DSRBench incorporates the following three key designs: (1) we <u>avoid questions with trivial answers</u>; (2) we adopt <u>a balanced data distribution in various aspects</u>, removing priors in the answer distribution, <i>e.g.</i>, pedestrians are often located lower than street lights, or the fact that objects higher in 3D space are also higher in 2D image plane; and (3) <u>robust evaluation strategies</u>, such as CircularEval <d-cite key="liu2025mmbench"></d-cite> and our novel FlipEval.
             </p>
 
             <d-figure id="fig4">
                 <figure>
                     <img src="assets/images/3dsrbench-teaser-b.png" alt="Our RCAD" style="max-height: 360px; object-fit: contain;">
                     <figcaption>
-                        <b>Figure 4.</b> Illustration of our key designs. Top: balanced data distrubtion with complementary pairs. Bottom: our novel FlipEval for robust evaluation.
+                        <b>Figure 3.</b> Illustration of our key designs. Top: balanced data distrubtion with complementary pairs. Bottom: our novel FlipEval for robust evaluation.
                     </figcaption>
                 </figure>
             </d-figure>
@@ -441,7 +440,7 @@
                 <figure>
                     <img src="assets/images/3drbench_eg.png" alt="3DSRBench">
                     <figcaption>
-                        <b>Figure 5.</b> Failure cases of GPT-4o on our 3DSRBench dataset.
+                        <b>Figure 4.</b> Failure cases of GPT-4o on our 3DSRBench dataset.
                     </figcaption>
                 </figure>
             </d-figure>
@@ -462,11 +461,11 @@
         <d-appendix>
             <h3>BibTeX</h3>
             <p class="bibtex">
-                @article{ma20243dsrbench,<br/>
-                &nbsp;&nbsp;title={3DSRBench: A Comprehensive 3D Spatial Reasoning Benchmark},<br/>
-                &nbsp;&nbsp;author={Ma, Wufei and Chen, Haoyu and Zhang, Guofeng and Melo, Celso M de and Yuille, Alan and Chen, Jieneng},<br/>
-                &nbsp;&nbsp;journal={arXiv preprint arXiv:2412.07825},<br/>
-                &nbsp;&nbsp;year={2024}<br/>
+                @article{ma20243dsrbench,
+                &nbsp;&nbsp;title={3DSRBench: A Comprehensive 3D Spatial Reasoning Benchmark},
+                &nbsp;&nbsp;author={Ma, Wufei and Chen, Haoyu and Zhang, Guofeng and de Melo, Celso M and Yuille, Alan and Chen, Jieneng},
+                &nbsp;&nbsp;journal={arXiv preprint arXiv:2412.07825},
+                &nbsp;&nbsp;year={2024}
                 }
             </p>
 
